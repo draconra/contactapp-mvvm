@@ -20,6 +20,7 @@ import com.gojek.testgojek.R;
 import com.gojek.testgojek.data.ContactFactory;
 import com.gojek.testgojek.data.ContactService;
 import com.gojek.testgojek.model.Contact;
+import com.gojek.testgojek.view.EditContactActivity;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -135,7 +136,8 @@ public class ContactDetailViewModel {
     }
 
     public void onClickSMS(View view) {
-        Intent i = new Intent(Intent.ACTION_SENDTO, Uri.parse("messageto:" + getPhoneNumber()));
+        Intent i = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + getPhoneNumber()));
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(i);
     }
 
@@ -161,7 +163,7 @@ public class ContactDetailViewModel {
     private void shareAsSMS() {
         Intent i = new Intent();
         i.setAction(Intent.ACTION_SENDTO);
-        i.setData(Uri.parse("messageto:"));
+        i.setData(Uri.parse("smsto:"));
         i.putExtra("sms_body", "Name: " + getFirstName() + " " + getLastName() + " \n" +
                 "Phone Number: " + getPhoneNumber() + " \n" +
                 "Email: " + getEmail() + "\n");
@@ -214,6 +216,17 @@ public class ContactDetailViewModel {
             e.printStackTrace();
         }
         return vcfFile;
+    }
+
+    public void editData(){
+        Log.e("id",""+contact.id);
+        Intent intent = new Intent(contactDetailViewModelContract.getContext(), EditContactActivity.class);
+        intent.putExtra("id", contact.getId());
+        intent.putExtra("firstname", contact.getFirstName());
+        intent.putExtra("lastname", contact.getLastName());
+        intent.putExtra("phone", contact.getPhoneNumber());
+        intent.putExtra("email", contact.getEmail());
+        contactDetailViewModelContract.getContext().startActivity(intent);
     }
 
 }

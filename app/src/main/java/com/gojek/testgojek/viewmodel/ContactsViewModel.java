@@ -1,13 +1,13 @@
 package com.gojek.testgojek.viewmodel;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 
 import com.gojek.testgojek.data.ContactFactory;
 import com.gojek.testgojek.data.ContactService;
@@ -30,32 +30,34 @@ import retrofit2.Response;
 
 public class ContactsViewModel {
 
-    private Context context;
+    private Context mContext;
     private ContactsViewModelContract.MainView contactsViewModelContract;
     private DatabaseHelper helper;
     private ArrayList<Contact> contacts;
     private ContactService contactService;
     public boolean isConnected;
+    private ProgressDialog progressDialog;
 
     public ContactsViewModel(ContactsViewModelContract.MainView mainView, Context context) {
         contactsViewModelContract = mainView;
-        this.context = context;
+        this.mContext = context;
         initialChecks();
     }
 
     public void initialChecks()
     {
+        progressDialog = new ProgressDialog(mContext);
         //Check Network connection
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
 
         //Instantiate DB object
-        helper = new DatabaseHelper(context);
+        helper = new DatabaseHelper(mContext);
 
         if (!isConnected)
-            Snackbar.make((((Activity) context).findViewById(android.R.id.content)), "Not able to connect to Server", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make((((Activity) mContext).findViewById(android.R.id.content)), "Not able to connect to Server", Snackbar.LENGTH_SHORT).show();
 
         //Check whether there is data in local DB
         if (helper.getCount(Contact.class) > 0) {
@@ -68,9 +70,13 @@ public class ContactsViewModel {
                 contactsViewModelContract.loadData(contacts);
             }
         } else {
-            if (isConnected)
+            if (isConnected) {
+                progressDialog.setMessage("Please Wait");
+                progressDialog.setIndeterminate(true);
+                progressDialog.setCancelable(true);
+                progressDialog.show();
                 doLoadDataContacts();
-            else {
+            }else {
                 showRetryDialog();
             }
         }
@@ -83,10 +89,8 @@ public class ContactsViewModel {
         getContactsCall.enqueue(new Callback<List<Contact>>() {
             @Override
             public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
-                Log.e("Kontak", "getContactsCall response: " + response.body());
-
+                progressDialog.dismiss();
                 //Retrieving from DB
-                //List<Contact> myContacts = helper.getAll(Contact.class);
                 contacts = new ArrayList<>(response.body().size());
                 contacts.addAll(response.body());
 
@@ -102,7 +106,7 @@ public class ContactsViewModel {
 
             @Override
             public void onFailure(Call<List<Contact>> call, Throwable t) {
-                Log.v("Kontak", "getContactsCall failure response: " + t.toString());
+                progressDialog.dismiss();
             }
         });
 

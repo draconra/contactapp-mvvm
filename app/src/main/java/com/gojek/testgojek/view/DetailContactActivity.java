@@ -124,6 +124,7 @@ public class DetailContactActivity extends BaseActivity implements ContactDetail
                 onClickFavorite();
                 return true;
             case R.id.action_edit:
+                contactDetailViewModel.editData();
                 return true;
             case R.id.action_other:
                 contactDetailViewModel.onClickShare();

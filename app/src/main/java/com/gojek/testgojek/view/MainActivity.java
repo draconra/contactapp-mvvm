@@ -1,5 +1,6 @@
 package com.gojek.testgojek.view;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -59,7 +60,7 @@ public class MainActivity extends BaseActivity implements ContactsViewModelContr
         inflater = LayoutInflater.from(MainActivity.this);
         activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         ButterKnife.bind(this);
-        ContactsViewModel contactsViewModel = new ContactsViewModel(mainView, getApplicationContext());
+        ContactsViewModel contactsViewModel = new ContactsViewModel(mainView, this);
         activityMainBinding.setContactsViewModel(contactsViewModel);
 
         setSupportActionBar(toolbar);
