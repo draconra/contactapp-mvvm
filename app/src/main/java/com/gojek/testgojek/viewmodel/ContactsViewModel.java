@@ -46,7 +46,6 @@ public class ContactsViewModel {
     public void initialChecks()
     {
         //Check Network connection
-        //This is faster than checking through HTTP socket in Retrofit
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         isConnected = activeNetwork != null &&
@@ -62,7 +61,6 @@ public class ContactsViewModel {
         if (helper.getCount(Contact.class) > 0) {
             List<Contact> allContacts = helper.getAll(Contact.class);
             for (int i = 0; i < allContacts.size(); i++) {
-                //Log.v("Kontak", "DB fetching event: counter" +allContacts.get(i).getFirstName());
                 contacts = new ArrayList<>(allContacts.size());
                 contacts.addAll(allContacts);
                 //Set data on the listview

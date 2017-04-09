@@ -60,15 +60,13 @@ public class Contact extends BaseObservable {
         this.updatedAt = updatedAt;
     }
 
-    public Contact(String firstName, String lastName, String email, String phoneNumber, String profilePic, Boolean favorite, String createdAt, String updatedAt) {
+    public Contact(String firstName, String lastName, String email, String phoneNumber, String profilePic, Boolean favorite) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.profilePic = profilePic;
         this.favorite = favorite;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
     public String getFirstName() {

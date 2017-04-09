@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -42,6 +43,8 @@ public class MainActivity extends BaseActivity implements ContactsViewModelContr
     CoordinatorLayout coordinatorLayout;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     private LayoutInflater inflater;
     private PinnedHeaderListView listView;
@@ -89,31 +92,31 @@ public class MainActivity extends BaseActivity implements ContactsViewModelContr
 
     @Override
     public void loadData(final ArrayList<Contact> contacts) {
-        ArrayList<Contact> favContact = new ArrayList<>();
-        ArrayList<Contact> nonFavContact = new ArrayList<>();
-        for (int i = 0; i < contacts.size() ; i++) {
-            if(contacts.get(i).getFavorite()){
-                favContact.add(contacts.get(i));
-            }else {
-                nonFavContact.add(contacts.get(i));
-            }
-        }
+//        ArrayList<Contact> favContact = new ArrayList<>();
+//        ArrayList<Contact> nonFavContact = new ArrayList<>();
+//        for (int i = 0; i < contacts.size() ; i++) {
+//            if(contacts.get(i).getFavorite()){
+//                favContact.add(contacts.get(i));
+//            }else {
+//                nonFavContact.add(contacts.get(i));
+//            }
+//        }
 
-        Log.e("contact", "contact"+nonFavContact.size()+" fav"+favContact.size());
+//        Log.e("contact", "contact"+nonFavContact.size()+" fav"+favContact.size());
 
-        Collections.sort(favContact, new Comparator<Contact>() {
-            @Override
-            public int compare(Contact lhs, Contact rhs) {
-                char lhsFirstLetter = TextUtils.isEmpty(lhs.getFirstName()) ? ' ' : lhs.getFirstName().charAt(0);
-                char rhsFirstLetter = TextUtils.isEmpty(rhs.getFirstName()) ? ' ' : rhs.getFirstName().charAt(0);
-                int firstLetterComparison = Character.toUpperCase(lhsFirstLetter) - Character.toUpperCase(rhsFirstLetter);
-                if (firstLetterComparison == 0)
-                    return lhs.getFirstName().compareTo(rhs.getFirstName());
-                return firstLetterComparison;
-            }
-        });
+//        Collections.sort(favContact, new Comparator<Contact>() {
+//            @Override
+//            public int compare(Contact lhs, Contact rhs) {
+//                char lhsFirstLetter = TextUtils.isEmpty(lhs.getFirstName()) ? ' ' : lhs.getFirstName().charAt(0);
+//                char rhsFirstLetter = TextUtils.isEmpty(rhs.getFirstName()) ? ' ' : rhs.getFirstName().charAt(0);
+//                int firstLetterComparison = Character.toUpperCase(lhsFirstLetter) - Character.toUpperCase(rhsFirstLetter);
+//                if (firstLetterComparison == 0)
+//                    return lhs.getFirstName().compareTo(rhs.getFirstName());
+//                return firstLetterComparison;
+//            }
+//        });
 
-        Collections.sort(nonFavContact, new Comparator<Contact>() {
+        Collections.sort(contacts, new Comparator<Contact>() {
             @Override
             public int compare(Contact lhs, Contact rhs) {
                 char lhsFirstLetter = TextUtils.isEmpty(lhs.getFirstName()) ? ' ' : lhs.getFirstName().charAt(0);
@@ -126,7 +129,7 @@ public class MainActivity extends BaseActivity implements ContactsViewModelContr
         });
 
         listView = (PinnedHeaderListView) findViewById(list);
-        contactsAdapter = new ContactsAdapter(this,nonFavContact);
+        contactsAdapter = new ContactsAdapter(this,contacts);
 
         int pinnedHeaderBackgroundColor = getResources().getColor(R.color.pinned_header_text_bg);
         contactsAdapter.setPinnedHeaderBackgroundColor(pinnedHeaderBackgroundColor);
@@ -138,9 +141,18 @@ public class MainActivity extends BaseActivity implements ContactsViewModelContr
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getApplicationContext(), DetailContactActivity.class);
+                intent.putExtra("favorite", contacts.get(i).getFavorite().toString());
                 intent.putExtra("id", contacts.get(i).getId());
                 startActivity(intent);
-                Log.v("Kontak", "listview item click: " + i);
+//                Log.v("ContactId", "listview item click: " + i);
+            }
+        });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), AddContactActivity.class);
+                startActivity(intent);
             }
         });
     }

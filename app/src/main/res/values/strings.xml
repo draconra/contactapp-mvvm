@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">Contacts</string>
-    <string name="action_settings">Settings</string>
+    <string name="fname">First name</string>
+    <string name="lname">Last name</string>
+    <string name="mobile">Phone</string>
+    <string name="email">Email</string>
+    <string name="title_activity_temp">TempActivity</string>
+    <string-array name="sharecontact">
+        <item>Share as a Text</item>
+        <item>Share as a Contact</item>
+    </string-array>
 </resources>

@@ -88,6 +88,7 @@ public class ContactsAdapter extends SearchablePinnedHeaderListViewAdapter<Conta
                     .into(holder.profileCircularContactView.getImageView());
         }
         bindSectionHeader(holder.headerView, null, position);
+
         return rv;
     }
 
